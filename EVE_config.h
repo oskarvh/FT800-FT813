@@ -157,6 +157,7 @@ the IOT5
 #define EVE_VM810C
 #define EVE_FT810CB_HY50HD
 #define EVE_FT811CB_HY50HD
+#define EVE_FT810CB_ADAFRUIT_1860
 
 #endif
 
@@ -850,6 +851,27 @@ typedef struct
 #define EVE_HSYNC1 (128L)
 #define EVE_HOFFSET (203L)
 #define EVE_HCYCLE (1056L)
+#define EVE_PCLKPOL (1L)
+#define EVE_SWIZZLE (0L)
+#define EVE_PCLK (2L)
+#define EVE_CSPREAD (1L)
+#define EVE_GEN 2
+#endif
+
+/* untested */
+/* Adafruit 1680 aka KD50G21-40NT-A1 800x480 5.0" */
+#if defined(EVE_FT810CB_ADAFRUIT_1860)
+#define EVE_HSIZE (800L)
+#define EVE_VSIZE (480L)
+
+#define EVE_VSYNC0 (0L) // pDisplay->vertFrontPorch
+#define EVE_VSYNC1 (2L) //pDisplay->vertFrontPorch + pDisplay->vertSyncWidth
+#define EVE_VOFFSET (35L) //pDisplay->vertFrontPorch + pDisplay->vertBackPorch + pDisplay->vertSyncWidth
+#define EVE_VCYCLE (525L) //pDisplay->vertFrontPorch + pDisplay->vertRes + pDisplay->vertBackPorch + pDisplay->vertSyncWidth
+#define EVE_HSYNC0 (0L) // pDisplay->horzFrontPorch
+#define EVE_HSYNC1 (128L) // pDisplay->horzFrontPorch + pDisplay->horzSyncWidth
+#define EVE_HOFFSET (203L) // pDisplay->horzFrontPorch + pDisplay->horzBackPorch + pDisplay->horzSyncWidth
+#define EVE_HCYCLE (1056L) //pDisplay->horzFrontPorch + pDisplay->horzRes + pDisplay->horzBackPorch + pDisplay->horzSyncWidth
 #define EVE_PCLKPOL (1L)
 #define EVE_SWIZZLE (0L)
 #define EVE_PCLK (2L)

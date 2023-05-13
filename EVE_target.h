@@ -257,6 +257,13 @@ command buffer is executed by the command co-processor.
 
 #endif /* __MSP432P401R__ */
 
+#if defined(TIVAWARE) /* TI TM4C Tiva support */
+
+#include "EVE_target/EVE_target_TM4C.h"
+
+
+#endif /* TIVAWARE */
+
 #endif /* __TI_ARM */
 
 /* ################################################################## */

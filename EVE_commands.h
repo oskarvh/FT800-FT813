@@ -79,7 +79,7 @@ EVE_cmd_animstartram_burst()
 #ifndef EVE_COMMANDS_H
 #define EVE_COMMANDS_H
 
-//#include "EVE.h"
+#include "EVE.h"
 
 #define E_OK 0U
 #define E_NOT_OK 1U

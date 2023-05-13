@@ -717,6 +717,55 @@ void EVE_SPI_Init(void)
 }
 
 #endif /* __MSP432P401R__ */
+
+#if defined(TIVAWARE)
+
+
+void EVE_SPI_Init(void)
+{
+#ifdef DIRECT_SPI
+    /* Enable clock to SPI1, GPIOD and GPIOF */
+
+    SYSCTL->RCGCSSI |= (1<<1);   /*set clock enabling bit for SPI1 */
+    SYSCTL->RCGCGPIO |= (1<<3); /* enable clock to GPIOD for SPI1 */
+    SYSCTL->RCGCGPIO |= (1<<5); /* enable clock to GPIOF for slave select */
+
+    /*Initialize PD3 and PD0 for SPI1 alternate function*/
+
+    GPIOD->AMSEL &= ~0x09;      /* disable analog functionality RD0 and RD3 */
+    GPIOD->DEN |= 0x09;         /* Set RD0 and RD3 as digital pin */
+    GPIOD->AFSEL |= 0x09;       /* enable alternate function of RD0 and RD3*/
+    GPIOD->PCTL &= ~0x0000F00F; /* assign RD0 and RD3 pins to SPI1 */
+    GPIOD->PCTL |= 0x00002002;  /* assign RD0 and RD3 pins to SPI1  */
+
+    /* Initialize PF2 as a digital output as a slave select pin */
+
+    GPIOF->DEN |= (1<<2);         /* set PF2 pin digital */
+    GPIOF->DIR |= (1<<2);         /* set PF2 pin output */
+    GPIOF->DATA |= (1<<2);        /* keep SS idle high */
+
+    /* Select SPI1 as a Master, POL = 0, PHA = 0, clock = 4 MHz, 8 bit data */
+
+    SSI1->CR1 = 0;          /* disable SPI1 and configure it as a Master */
+    SSI1->CC = 0;           /* Enable System clock Option */
+    SSI1->CPSR = 4;         /* Select prescaler value of 4 .i.e 16MHz/4 = 4MHz */
+    SSI1->CR0 = 0x00007;     /* 4MHz SPI1 clock, SPI mode, 8 bit data */
+    SSI1->CR1 |= 2;         /* enable SPI1 */
+#else
+    // Initialize the SPI
+    SPI_Params spiParams;
+    SPI_Params_init(&spiParams);
+    // Set the bitrate to 11MHz as default.
+    // This can be increased later on
+    spiParams.bitRate = 10000000;
+    spiParams.mode = SPI_MASTER;
+    //spiParams.frameFormat = SPI_POL0_PHA0;
+    // Initialize SPI handle as default master
+    spiHandle = SPI_open(Board_SPI0, &spiParams);
+#endif
+}
+
+#endif
 #endif /* __TI_ARM__ */
 
 #endif

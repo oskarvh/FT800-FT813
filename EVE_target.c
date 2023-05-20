@@ -723,46 +723,66 @@ void EVE_SPI_Init(void)
 
 void EVE_SPI_Init(void)
 {
-#ifdef DIRECT_SPI
-    /* Enable clock to SPI1, GPIOD and GPIOF */
+    // The SSI0 peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
 
-    SYSCTL->RCGCSSI |= (1<<1);   /*set clock enabling bit for SPI1 */
-    SYSCTL->RCGCGPIO |= (1<<3); /* enable clock to GPIOD for SPI1 */
-    SYSCTL->RCGCGPIO |= (1<<5); /* enable clock to GPIOF for slave select */
+    // GPIO port A needs to be enabled so these pins can be used.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
-    /*Initialize PD3 and PD0 for SPI1 alternate function*/
-
-    GPIOD->AMSEL &= ~0x09;      /* disable analog functionality RD0 and RD3 */
-    GPIOD->DEN |= 0x09;         /* Set RD0 and RD3 as digital pin */
-    GPIOD->AFSEL |= 0x09;       /* enable alternate function of RD0 and RD3*/
-    GPIOD->PCTL &= ~0x0000F00F; /* assign RD0 and RD3 pins to SPI1 */
-    GPIOD->PCTL |= 0x00002002;  /* assign RD0 and RD3 pins to SPI1  */
-
-    /* Initialize PF2 as a digital output as a slave select pin */
-
-    GPIOF->DEN |= (1<<2);         /* set PF2 pin digital */
-    GPIOF->DIR |= (1<<2);         /* set PF2 pin output */
-    GPIOF->DATA |= (1<<2);        /* keep SS idle high */
-
-    /* Select SPI1 as a Master, POL = 0, PHA = 0, clock = 4 MHz, 8 bit data */
-
-    SSI1->CR1 = 0;          /* disable SPI1 and configure it as a Master */
-    SSI1->CC = 0;           /* Enable System clock Option */
-    SSI1->CPSR = 4;         /* Select prescaler value of 4 .i.e 16MHz/4 = 4MHz */
-    SSI1->CR0 = 0x00007;     /* 4MHz SPI1 clock, SPI mode, 8 bit data */
-    SSI1->CR1 |= 2;         /* enable SPI1 */
+    //
+    // Configure the pin muxing for SSI0 functions on port A2, A3, A4, and A5.
+    GPIOPinConfigure(GPIO_PA2_SSI0CLK);
+    GPIOPinConfigure(GPIO_PA3_SSI0FSS);
+#if defined(TARGET_IS_TM4C129_RA0) ||                                         \
+    defined(TARGET_IS_TM4C129_RA1) ||                                         \
+    defined(TARGET_IS_TM4C129_RA2)
+    GPIOPinConfigure(GPIO_PA4_SSI0XDAT0);
+    GPIOPinConfigure(GPIO_PA5_SSI0XDAT1);
 #else
-    // Initialize the SPI
-    SPI_Params spiParams;
-    SPI_Params_init(&spiParams);
-    // Set the bitrate to 11MHz as default.
-    // This can be increased later on
-    spiParams.bitRate = 10000000;
-    spiParams.mode = SPI_MASTER;
-    //spiParams.frameFormat = SPI_POL0_PHA0;
-    // Initialize SPI handle as default master
-    spiHandle = SPI_open(Board_SPI0, &spiParams);
+    GPIOPinConfigure(GPIO_PA4_SSI0RX);
+    GPIOPinConfigure(GPIO_PA5_SSI0TX);
 #endif
+
+    // Configure the GPIO settings for the SSI pins.  This function also gives
+    // control of these pins to the SSI hardware.  Consult the data sheet to
+    // see which functions are allocated per pin.
+    // The pins are assigned as follows:
+    //      PA5 - SSI0Tx (TM4C123x) / SSI0XDAT1 (TM4C129x)
+    //      PA4 - SSI0Rx (TM4C123x) / SSI0XDAT0 (TM4C129x)
+    //      PA3 - SSI0Fss
+    //      PA2 - SSI0CLK
+    GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_3 |
+                   GPIO_PIN_2);
+
+    // Configure and enable the SSI port for SPI master mode.  Use SSI0,
+    // system clock supply, idle clock level low and active low clock in
+    // freescale SPI mode, master mode, 10MHz SSI frequency, and 8-bit data.
+    // For SPI mode, you can set the polarity of the SSI clock when the SSI
+    // unit is idle.  You can also configure what clock edge you want to
+    // capture data on.  Please reference the datasheet for more information on
+    // the different SPI modes.
+    //
+    SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0,
+                       SSI_MODE_MASTER, 6000000, 8);
+
+
+    // Enable the SSI0 module.
+    //
+    SSIEnable(SSI0_BASE);
+
+    //
+    // Read any residual data from the SSI port.  This makes sure the receive
+    // FIFOs are empty, so we don't read any unwanted junk.  This is done here
+    // because the SPI SSI mode is full-duplex, which allows you to send and
+    // receive at the same time.  The SSIDataGetNonBlocking function returns
+    // "true" when data was returned, and "false" when no data was returned.
+    // The "non-blocking" function checks if there is any data in the receive
+    // FIFO and does not "hang" if there isn't.
+    //
+    uint32_t tmpRxBuf;
+    while(SSIDataGetNonBlocking(SSI0_BASE, &tmpRxBuf))
+    {
+    }
 }
 
 #endif

@@ -261,7 +261,6 @@ command buffer is executed by the command co-processor.
 
 #include "EVE_target/EVE_target_TM4C.h"
 
-
 #endif /* TIVAWARE */
 
 #endif /* __TI_ARM */

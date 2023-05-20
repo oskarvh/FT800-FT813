@@ -157,7 +157,7 @@ the IOT5
 #define EVE_VM810C
 #define EVE_FT810CB_HY50HD
 #define EVE_FT811CB_HY50HD
-#define EVE_FT810CB_ADAFRUIT_1860
+#define EVE_FT810CB_ADAFRUIT_1680
 
 #endif
 
@@ -860,7 +860,7 @@ typedef struct
 
 /* untested */
 /* Adafruit 1680 aka KD50G21-40NT-A1 800x480 5.0" */
-#if defined(EVE_FT810CB_ADAFRUIT_1860)
+#if defined(EVE_FT810CB_ADAFRUIT_1680)
 #define EVE_HSIZE (800L)
 #define EVE_VSIZE (480L)
 

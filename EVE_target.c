@@ -763,7 +763,7 @@ void EVE_SPI_Init(void)
     // the different SPI modes.
     //
     SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0,
-                       SSI_MODE_MASTER, 6000000, 8);
+                       SSI_MODE_MASTER, 8000000, 8);
 
 
     // Enable the SSI0 module.

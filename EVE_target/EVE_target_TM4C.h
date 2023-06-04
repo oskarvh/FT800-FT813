@@ -62,7 +62,7 @@ Changes added in by Oskar von Heideken to support TM4C123 and TM4C129 chipsets
 #endif
 
 #if !defined (EVE_DELAY_1MS)
-#define EVE_DELAY_1MS 8000U /* ~1ms at 48MHz Core-Clock */
+#define EVE_DELAY_1MS 8000U  /* ~1ms at 48MHz Core-Clock */
 #endif
 
 
@@ -74,9 +74,11 @@ static inline void DELAY_MS(uint16_t val)
      const TickType_t xDelay = val / portTICK_PERIOD_MS;
      vTaskDelay( xDelay );
 #else
-     for(uint32_t i = 0 ; i < val*EVE_DELAY_1MS ; i++){
-         //asm("NOP");
-     }
+     // This is generally only called in the setup,
+     // so using a blocking delay should be fine.
+     // Otherwise a better approach would be to use an RTOS for this.
+     // SysCtlDelay takes 3 instructions.
+     SysCtlDelay(val*SysCtlClockGet() / 3000 ); // TODO: Fix this delay...
 #endif
 
 }

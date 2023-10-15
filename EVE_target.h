@@ -268,6 +268,15 @@ command buffer is executed by the command co-processor.
 /* ################################################################## */
 /* ################################################################## */
 
+#if defined(__RA4M3__)
+
+#include "EVE_target/EVE_target_RA4M3.h"
+
+#endif /* __TI_ARM */
+
+/* ################################################################## */
+/* ################################################################## */
+
 /* this is for TIs C2000 compiled with their ti-cgt-c2000 compiler which does not define this many symbols */
 #if defined(__TMS320C28XX__)
 

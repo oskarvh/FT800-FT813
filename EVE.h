@@ -58,7 +58,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 #ifndef EVE_H
 #define EVE_H
-
+#include <stdint.h>
 #include "EVE_target.h"
 
 #ifdef __cplusplus

@@ -791,10 +791,18 @@ void EVE_SPI_Init(void)
 /* ################################################################## */
 /* ################################################################## */
 
-#if defined (__RA4M3__)
+#if defined (EK_RA4M3)
+#include "r_sci_spi.h"
+#include "hal_data.h"
 void EVE_SPI_Init(void)
 {
+    fsp_err_t err = R_SCI_SPI_Open(&g_spi2_ctrl, &g_spi2_cfg);
+    /* Handle Error */
+    if (FSP_SUCCESS != err)
+    {
+        while(1);
+    }
 }
-#endif
+#endif //EK_RA4M3
 
 #endif

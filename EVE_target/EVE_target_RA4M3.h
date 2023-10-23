@@ -1,5 +1,5 @@
 /*
-@file    EVE_target_MSP432.h
+@file    EVE_target_RA4M3.h
 @brief   target specific includes, definitions and functions
 @version 5.0
 @date    2023-04-12
@@ -29,69 +29,77 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 - basic maintenance: checked for violations of white space and indent rules
 - split up the optional default defines to allow to only change what needs changing thru the build-environment
 
-Changes added in by Oskar von Heideken to support TM4C123 and TM4C129 chipsets
+Changes added in by Oskar von Heideken to support Renesas RA4M3 chipset
 
 */
 
 #ifndef EVE_TARGET_RA4M3_H
 #define EVE_TARGET_RA4M3_H
 
-#if defined (__RA4M3__)
+#if defined (EK_RA4M3)
 
-// Using https://microcontrollerslab.com/spi-tm4c123-communication-between-tiva-launchpad-arduino/
+
 //#define DIRECT_SPI
 #include <stdbool.h>
 #include <unistd.h>
 #include <stdint.h>
 
+// Renesas specific includes
+#include "bsp_api.h"
+#include "r_ioport.h"
+#include "common_data.h"
+#include "r_sci_spi.h"
+#include "hal_data.h"
+#include "renesas_utils.h"
 
-/* you may define these in your build-environment to use different settings */
-#if !defined (EVE_CS)
-#define EVE_CS_PORT GPIO_PORTA_BASE /* PA.6 */
-#define EVE_CS GPIO_PIN_6
+#if !defined (CS_PIN)
+#define CS_PIN BSP_IO_PORT_01_PIN_13
 #endif
 
-#if !defined (EVE_PDN)
-#define EVE_PDN_PORT GPIO_PORTB_BASE /* PB.0 */
-#define EVE_PDN GPIO_PIN_0
+#if !defined (PDN_PIN)
+#define PDN_PIN BSP_IO_PORT_01_PIN_15
 #endif
-
-#if !defined (EVE_DELAY_1MS)
-#define EVE_DELAY_1MS 8000U  /* ~1ms at 48MHz Core-Clock */
-#endif
+#define BSP_DELAY_UNITS_MILLISECONDS 1000
 
 
 void EVE_SPI_Init(void);
 
+
 static inline void DELAY_MS(uint16_t val)
 {
 
-
+    R_BSP_SoftwareDelay(val*2, BSP_DELAY_UNITS_MILLISECONDS);
 }
+
+
 
 static inline void EVE_pdn_set(void)
 {
        /* Power-Down low */
+       R_IOPORT_PinWrite(&g_ioport_ctrl, PDN_PIN, BSP_IO_LEVEL_LOW);
 }
 
 static inline void EVE_pdn_clear(void)
 {
        /* Power-Down high */
+       R_IOPORT_PinWrite(&g_ioport_ctrl, PDN_PIN, BSP_IO_LEVEL_HIGH);
 }
 
 static inline void EVE_cs_set(void)
 {
-       /* CS low */
+    /* CS low */
+    R_IOPORT_PinWrite(&g_ioport_ctrl, CS_PIN, BSP_IO_LEVEL_LOW);
 }
 
 static inline void EVE_cs_clear(void)
 {
-        /* CS high */
+    /* CS high */
+    R_IOPORT_PinWrite(&g_ioport_ctrl, CS_PIN, BSP_IO_LEVEL_HIGH);
 }
 
 static inline void spi_transmit(uint8_t data)
 {
-
+    spiSend(&g_spi2_ctrl, &data, sizeof(uint8_t), SPI_BIT_WIDTH_8_BITS);
 }
 
 static inline void spi_transmit_32(uint32_t data)
@@ -112,7 +120,9 @@ static inline void spi_transmit_burst(uint32_t data)
 
 static uint8_t spi_receive(uint8_t data)
 {
-
+    uint8_t rxData = 0;
+    spiSendReceive(&g_spi2_ctrl, &data ,&rxData, 1, SPI_BIT_WIDTH_8_BITS);
+    return rxData;
 }
 
 static inline uint8_t fetch_flash_byte(const uint8_t *data)
@@ -120,6 +130,6 @@ static inline uint8_t fetch_flash_byte(const uint8_t *data)
     return *data;
 }
 
-#endif //__RA4M3__
+#endif // EK_RA4M3
 
 #endif /* EVE_TARGET_RA4M3_H */

@@ -791,7 +791,7 @@ void EVE_SPI_Init(void)
 /* ################################################################## */
 /* ################################################################## */
 
-#if defined (EK_RA4M3)
+#if defined (EK_RA4M3) || defined (COMSCICALC_CM_V0)
 #include "r_sci_spi.h"
 #include "hal_data.h"
 void EVE_SPI_Init(void)
@@ -803,6 +803,6 @@ void EVE_SPI_Init(void)
         while(1);
     }
 }
-#endif //EK_RA4M3
+#endif //EK_RA4M3 or COMSCICALC_CM_V0
 
 #endif

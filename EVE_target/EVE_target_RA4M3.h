@@ -36,7 +36,7 @@ Changes added in by Oskar von Heideken to support Renesas RA4M3 chipset
 #ifndef EVE_TARGET_RA4M3_H
 #define EVE_TARGET_RA4M3_H
 
-#if defined (EK_RA4M3)
+#if defined (EK_RA4M3) || defined(COMSCICALC_CM_V0)
 
 
 //#define DIRECT_SPI
@@ -53,11 +53,23 @@ Changes added in by Oskar von Heideken to support Renesas RA4M3 chipset
 #include "renesas_utils.h"
 
 #if !defined (CS_PIN)
+#if defined(EK_RA4M3)
 #define CS_PIN BSP_IO_PORT_01_PIN_13
 #endif
 
+#if defined(COMSCICALC_CM_V0)
+#define CS_PIN BSP_IO_PORT_01_PIN_03
+#endif
+#endif
+
 #if !defined (PDN_PIN)
+#if defined(EK_RA4M3)
 #define PDN_PIN BSP_IO_PORT_01_PIN_15
+#endif
+
+#if defined(COMSCICALC_CM_V0)
+#define PDN_PIN BSP_IO_PORT_04_PIN_02
+#endif
 #endif
 #define BSP_DELAY_UNITS_MILLISECONDS 1000
 
@@ -67,8 +79,7 @@ void EVE_SPI_Init(void);
 
 static inline void DELAY_MS(uint16_t val)
 {
-
-    R_BSP_SoftwareDelay(val*2, BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay(val, BSP_DELAY_UNITS_MILLISECONDS);
 }
 
 
@@ -130,6 +141,6 @@ static inline uint8_t fetch_flash_byte(const uint8_t *data)
     return *data;
 }
 
-#endif // EK_RA4M3
+#endif // EK_RA4M3 or COMSCICALC_CM_V0
 
 #endif /* EVE_TARGET_RA4M3_H */

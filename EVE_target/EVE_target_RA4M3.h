@@ -74,7 +74,7 @@ Changes added in by Oskar von Heideken to support Renesas RA4M3 chipset
 #define BSP_DELAY_UNITS_MILLISECONDS 1000
 
 
-void EVE_SPI_Init(void);
+void EVE_init_spi(void);
 
 
 static inline void DELAY_MS(uint16_t val)

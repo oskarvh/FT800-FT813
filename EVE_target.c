@@ -702,7 +702,7 @@ const eUSCI_SPI_MasterConfig EVE_Config =
     EUSCI_B_SPI_3PIN                           // 3Wire SPI Mode
 };
 
-void EVE_SPI_Init(void)
+void EVE_init_spi(void)
 {
     GPIO_setAsOutputPin(EVE_CS_PORT, EVE_CS);
     GPIO_setAsOutputPin(EVE_PDN_PORT, EVE_PDN);
@@ -721,7 +721,7 @@ void EVE_SPI_Init(void)
 #if defined(TIVAWARE)
 
 
-void EVE_SPI_Init(void)
+void EVE_init_spi(void)
 {
     // The SSI0 peripheral must be enabled for use.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
@@ -794,7 +794,7 @@ void EVE_SPI_Init(void)
 #if defined (EK_RA4M3) || defined (COMSCICALC_CM_V0)
 #include "r_sci_spi.h"
 #include "hal_data.h"
-void EVE_SPI_Init(void)
+void EVE_init_spi(void)
 {
     fsp_err_t err = R_SCI_SPI_Open(&g_spi2_ctrl, &g_spi2_cfg);
     /* Handle Error */

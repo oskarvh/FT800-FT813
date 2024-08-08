@@ -63,7 +63,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 #define RIVERDI_SOMI BIT7   /* P1.7 */
 #define RIVERDI_CLK BIT5    /* P1.5 */
 
-void EVE_SPI_Init(void);
+void EVE_init_spi(void);
 
 static inline void DELAY_MS(uint16_t val)
 {

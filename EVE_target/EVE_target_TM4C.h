@@ -66,7 +66,7 @@ Changes added in by Oskar von Heideken to support TM4C123 and TM4C129 chipsets
 #endif
 
 
-void EVE_SPI_Init(void);
+void EVE_init_spi(void);
 
 static inline void DELAY_MS(uint16_t val)
 {

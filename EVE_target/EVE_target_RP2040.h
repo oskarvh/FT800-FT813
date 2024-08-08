@@ -44,6 +44,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 /* you may define these in your build-environment to use different settings */
 #if !defined (EVE_CS)
+#error "WRONG DEFITION OF EVE_CS"
 #define EVE_CS 5
 #endif
 

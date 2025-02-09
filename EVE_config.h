@@ -879,6 +879,27 @@ typedef struct
 #define EVE_GEN 2
 #endif
 
+/* untested */
+/* Adafruit 1591 aka CH430WQ01-T 480x272 4.3" */
+#if defined(EVE_FT810CB_ADAFRUIT_1591)
+#define EVE_HSIZE (480L) /* Thd Length of visible part of line (in PCLKs) - display width */
+#define EVE_VSIZE (272L) /* Tvd Number of visible lines (in lines) - display height */
+
+#define EVE_VSYNC0 (1L)   /* Tvf Vertical Front Porch */
+#define EVE_VSYNC1 (7L)  /* Tvf + Tvp Vertical Front Porch plus Vsync Pulse width */
+#define EVE_VOFFSET (8L) /* Tvf + Tvp + Tvb Number of non-visible lines (in lines) */
+#define EVE_VCYCLE (288L) /* Tv Total number of lines (visible and non-visible) (in lines) */
+#define EVE_HSYNC0 (40L)   /* Thf Horizontal Front Porch */
+#define EVE_HSYNC1 (1L)  /* Thf + Thp Horizontal Front Porch plus Hsync Pulse width */
+#define EVE_HOFFSET (41L) /* Thf + Thp + Thb Length of non-visible part of line (in PCLK cycles) */
+#define EVE_HCYCLE (525L) /* Th Total length of line (visible and non-visible) (in PCLKs) */
+#define EVE_PCLKPOL (0L) // Write data on rising edge
+#define EVE_SWIZZLE (0L)
+#define EVE_PCLK (7L) // 60/7 = 8.57 MHz
+#define EVE_CSPREAD (1L)
+#define EVE_GEN 2
+#endif
+
 /* ########## 1024 x 600 ########## */
 
 /* ADAM101-LCP-SWVGA-NEW 1024x600 10.1" Glyn, capacitive, FT813 */
